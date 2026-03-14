@@ -1,0 +1,32 @@
+# Dependencies
+node_modules
+
+# Build output (會在容器內重新生成)
+dist
+
+# IDE 和編輯器設定
+.vscode
+.tanstack
+
+# Version control
+.git
+.gitignore
+
+# Documentation
+README.md
+
+# Code formatting and linting config
+.prettierignore
+.prettierrc
+eslint.config.js
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Development/testing files
+public/mockServiceWorker.js
