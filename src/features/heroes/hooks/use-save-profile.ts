@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { HeroProfileDto } from "@/features/heroes/services/hero-profile.dto";
-import { patchHeroProfileApi } from "@/features/heroes/services/save-profile.api";
+import type { HeroProfile } from "@/types/hero.type";
+import { saveHeroProfile } from "@/features/heroes/services/save-profile.app";
 
 export const useSaveProfile = (heroId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (profile: HeroProfileDto) => patchHeroProfileApi(heroId, profile),
+    mutationFn: (profile: HeroProfile) => saveHeroProfile(heroId, profile),
     onSuccess: (data) => {
       queryClient.setQueryData(["heroes", heroId, "profile"], data);
       toast.success("能力值更新成功");

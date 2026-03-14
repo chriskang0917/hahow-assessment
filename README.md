@@ -63,13 +63,16 @@ src/
 │       │   ├── use-ability-editor.test.ts # 編輯器 Hook 單元測試
 │       │   └── use-save-profile.ts   # 儲存能力值 Mutation Hook
 │       ├── services/
-│       │   ├── heroes.api.ts         # 英雄列表 API
+│       │   ├── heroes.app.ts         # 英雄列表 Application 層（組裝 API）
+│       │   ├── heroes.api.ts         # 英雄列表 API 層（HTTP 呼叫）
 │       │   ├── heroes.dto.ts         # 英雄列表 DTO 型別
 │       │   ├── heroes.schema.ts      # 英雄列表 Zod Schema
-│       │   ├── hero-profile.api.ts   # 英雄能力值 API
+│       │   ├── hero-profile.app.ts   # 英雄能力值 Application 層
+│       │   ├── hero-profile.api.ts   # 英雄能力值 API 層
 │       │   ├── hero-profile.dto.ts   # 英雄能力值 DTO 型別
 │       │   ├── hero-profile.schema.ts# 英雄能力值 Zod Schema
-│       │   └── save-profile.api.ts   # 儲存能力值 API
+│       │   ├── save-profile.app.ts   # 儲存能力值 Application 層
+│       │   └── save-profile.api.ts   # 儲存能力值 API 層
 │       └── mocks/
 │           └── heroes-handlers.ts    # MSW Mock Handlers
 ├── lib/
@@ -93,6 +96,12 @@ src/
 ```
 
 採用 **Feature-based 模組化設計**：將英雄功能相關的元件、Hooks、服務、型別、Mock 集中在 `features/heroes/` 下，使功能邊界清晰，方便擴展與維護。共用的 UI 元件與工具放在頂層 `components/`、`lib/`、`utils/`。
+
+### API 服務層架構
+
+每個 API 端點遵循分層設計：`*.api.ts`（HTTP 呼叫 + Zod 驗證）→ `*.app.ts`（業務邏輯組裝）→ `*.dto.ts`（API 回應型別）。Hooks 統一呼叫 `.app.ts`，不直接存取 `.api.ts`。
+
+目前 app 層為 pass-through（直接回傳 API 結果），因 DTO 與 Domain 型別結構一致，無需額外轉換。隨業務複雜度增加，可在 app 層加入跨 API 組裝、資料合併等邏輯。若 API 回應格式與前端 Domain 型別差異較大，可額外新增 `*.transform.ts` 進行 DTO → Domain 的資料轉換。
 
 ## Application 邏輯架構
 

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchHeroProfileApi } from "@/features/heroes/services/hero-profile.api";
+import { fetchHeroProfile } from "@/features/heroes/services/hero-profile.app";
 
 export const useHeroProfile = (heroId: string) =>
   useQuery({
     queryKey: ["heroes", heroId, "profile"],
-    queryFn: ({ signal }) => fetchHeroProfileApi(heroId, signal),
+    queryFn: ({ signal }) => fetchHeroProfile(heroId, signal),
     enabled: !!heroId,
   });
