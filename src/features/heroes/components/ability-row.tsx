@@ -1,7 +1,7 @@
 import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { AbilityKey } from "@/types/hero.type";
 import { ABILITY_LABELS } from "@/constants/hero.const";
+import type { AbilityKey } from "@/types/hero.type";
 
 type AbilityRowProps = {
   abilityKey: AbilityKey;

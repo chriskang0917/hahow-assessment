@@ -30,21 +30,13 @@ export const HeroList = () => {
   }
 
   if (!heroes || heroes.length === 0) {
-    return (
-      <section className="py-8 text-center text-muted-foreground">
-        目前沒有英雄資料
-      </section>
-    );
+    return <section className="py-8 text-center text-muted-foreground">目前沒有英雄資料</section>;
   }
 
   return (
     <section className="flex flex-wrap justify-center gap-4">
       {heroes.map((hero) => (
-        <HeroCard
-          key={hero.id}
-          hero={hero}
-          isSelected={hero.id === heroId}
-        />
+        <HeroCard key={hero.id} hero={hero} isSelected={hero.id === heroId} />
       ))}
     </section>
   );

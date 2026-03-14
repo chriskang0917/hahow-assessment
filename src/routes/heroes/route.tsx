@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { HeroList } from "@/features/heroes/components/hero-list";
 import { DarkModeToggle } from "@/features/heroes/components/dark-mode-toggle";
+import { HeroList } from "@/features/heroes/components/hero-list";
 
 export const Route = createFileRoute("/heroes")({
   component: HeroesLayout,

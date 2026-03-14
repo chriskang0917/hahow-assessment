@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { patchHeroProfileApi } from "@/features/heroes/services/save-profile.api";
 import type { HeroProfileDto } from "@/features/heroes/services/hero-profile.dto";
+import { patchHeroProfileApi } from "@/features/heroes/services/save-profile.api";
 
 export const useSaveProfile = (heroId: string) => {
   const queryClient = useQueryClient();

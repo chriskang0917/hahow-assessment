@@ -21,9 +21,7 @@ describe("useAbilityEditor", () => {
   });
 
   it("increments a value and decreases remaining", () => {
-    const { result } = renderHook(() =>
-      useAbilityEditor({ str: 5, int: 5, agi: 0, luk: 5 }),
-    );
+    const { result } = renderHook(() => useAbilityEditor({ str: 5, int: 5, agi: 0, luk: 5 }));
     act(() => result.current.decrement("str"));
     expect(result.current.remaining).toBe(1);
     act(() => result.current.increment("agi"));
@@ -45,9 +43,7 @@ describe("useAbilityEditor", () => {
   });
 
   it("does not decrement below 0", () => {
-    const { result } = renderHook(() =>
-      useAbilityEditor({ str: 0, int: 5, agi: 5, luk: 5 }),
-    );
+    const { result } = renderHook(() => useAbilityEditor({ str: 0, int: 5, agi: 5, luk: 5 }));
     act(() => result.current.decrement("str"));
     expect(result.current.abilities!.str).toBe(0);
   });
@@ -69,10 +65,9 @@ describe("useAbilityEditor", () => {
   });
 
   it("resets when initialProfile changes", () => {
-    const { result, rerender } = renderHook(
-      ({ profile }) => useAbilityEditor(profile),
-      { initialProps: { profile: mockProfile } },
-    );
+    const { result, rerender } = renderHook(({ profile }) => useAbilityEditor(profile), {
+      initialProps: { profile: mockProfile },
+    });
     act(() => result.current.decrement("str"));
     expect(result.current.isDirty).toBe(true);
 

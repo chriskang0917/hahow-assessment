@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { useBlocker } from "@tanstack/react-router";
+import { useEffect } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,9 +34,7 @@ export const UnsavedChangesBlocker = ({ isDirty }: UnsavedChangesBlockerProps) =
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>尚未儲存的修改</AlertDialogTitle>
-          <AlertDialogDescription>
-            你有尚未儲存的能力值修改，確定要離開嗎？
-          </AlertDialogDescription>
+          <AlertDialogDescription>你有尚未儲存的能力值修改，確定要離開嗎？</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={reset}>取消</AlertDialogCancel>

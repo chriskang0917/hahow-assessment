@@ -1,9 +1,9 @@
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ABILITY_KEYS } from "@/constants/hero.const";
+import { useAbilityEditor } from "@/features/heroes/hooks/use-ability-editor";
 import { useHeroProfile } from "@/features/heroes/hooks/use-hero-profile";
 import { useSaveProfile } from "@/features/heroes/hooks/use-save-profile";
-import { useAbilityEditor } from "@/features/heroes/hooks/use-ability-editor";
 import { AbilityRow } from "./ability-row";
 import { HeroProfileSkeleton } from "./hero-profile-skeleton";
 import { UnsavedChangesBlocker } from "./unsaved-changes-blocker";

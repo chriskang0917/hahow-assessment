@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 
 const baseURL = "https://hahow-recruit.herokuapp.com";
 

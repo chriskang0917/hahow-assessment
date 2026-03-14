@@ -2,9 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { AbilityKey, HeroProfile } from "@/types/hero.type";
 
 export const useAbilityEditor = (initialProfile: HeroProfile | undefined) => {
-  const [abilities, setAbilities] = useState<HeroProfile | undefined>(
-    initialProfile,
-  );
+  const [abilities, setAbilities] = useState<HeroProfile | undefined>(initialProfile);
 
   const totalPoints = useMemo(() => {
     if (!initialProfile) return 0;
