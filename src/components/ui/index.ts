@@ -54,6 +54,7 @@ export {
   PaginationPrevious,
 } from "./pagination";
 export { SearchBar } from "./search-bar";
+export { Skeleton } from "./skeleton";
 export {
   Select,
   SelectContent,

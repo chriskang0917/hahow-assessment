@@ -3,8 +3,8 @@ import { QueryClient } from "@tanstack/react-query";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
-      retryDelay: 1000,
+      retry: 3,
+      retryDelay: (attemptIndex) => Math.min(3000 * 2 ** attemptIndex, 15000),
     },
   },
 });

@@ -42,12 +42,9 @@ src/
 ├── index.css                        # 全域樣式（Tailwind CSS）
 ├── routeTree.gen.ts                 # TanStack Router 自動產生的路由樹
 ├── components/
-│   ├── common/
-│   │   └── header.tsx               # 共用頁首元件
 │   └── ui/                          # shadcn/ui 元件庫（Button, Card, Skeleton...）
 ├── constants/
-│   ├── global.ts                    # 全域常數
-│   └── hero.const.ts                # 英雄相關常數
+│   └── hero.const.ts                # 英雄相關常數（ABILITY_KEYS, ABILITY_LABELS）
 ├── features/
 │   └── heroes/
 │       ├── components/
@@ -78,7 +75,6 @@ src/
 ├── lib/
 │   ├── axios.ts                     # Axios 實例（攔截器、超時設定）
 │   ├── query-client.ts              # TanStack Query Client 設定
-│   ├── store.ts                     # Zustand Store 工具函式
 │   └── utils.ts                     # 通用工具（cn）
 ├── routes/
 │   ├── __root.tsx                   # 根路由（Error Boundary、Sonner）
@@ -88,9 +84,7 @@ src/
 │       ├── index.tsx                # /heroes 首頁（提示選擇英雄）
 │       └── $heroId.tsx              # /heroes/:heroId（英雄能力值頁）
 ├── types/
-│   ├── hero.type.ts                 # 英雄相關型別定義
-│   ├── auth.type.ts                 # 認證相關型別
-│   └── root.ts                      # 根層級型別
+│   └── hero.type.ts                 # 英雄相關型別定義（Hero, HeroProfile, AbilityKey）
 └── utils/
     ├── case-transform.ts            # snake_case / camelCase 轉換
     ├── case-transform.test.ts       # 轉換函式測試
@@ -153,8 +147,7 @@ App
 | **TanStack Router** | 型別安全路由 | 主要原生支援型別路由，克服原先 React Router 需要手動撰寫型別的維護成本，file-based routing，自動 code splitting |
 | **TanStack Query v5** | 伺服器狀態管理 | 快取、去重、stale-while-revalidate、自動重試 |
 | **Axios** | HTTP 客戶端 | 支援 middleware 的處理（snake_case/camelCase 自動轉換）等設定 |
-| **shadcn/ui + Tailwind CSS v4** | UI 元件 + 樣式 | 可客製化的 headless 元件，utility-first CSS（同時評估到未來 CSS-in-JS 在專案成長時，可能會有越來越多重複性的 CSS，加上 styled-components 已經停止更新新功能），並基於維護性（MUI 的團隊 full time 支援）、Tree-shakable、統一套件的更新管理、更高階的元件設計、完整的 TS 支持採用 BASE UI，帶來的取捨是部分比較成熟的第三方套件支援，但目前尚未有可預期的需求無法達成  |
-| **Zustand** | 客戶端狀態管理 | 輕量、簡潔的 API，搭配 store 工具函式支援全域重置 |
+| **shadcn/ui + Tailwind CSS v4** | UI 元件 + 樣式 | 可客製化的 headless 元件搭配 utility-first CSS。底層選擇 BASE UI 取代原先的 Radix UI，考量為：MUI 團隊的 full-time 維護支援、Tree-shakable、統一的套件更新管理、更高階的元件設計、完整的 TypeScript 支持。取捨是部分成熟的第三方套件生態支援較少，但目前功能需求皆可達成。樣式方面，評估 CSS-in-JS 在專案成長時容易產生重複性 CSS，且 styled-components 已停止更新新功能，因此採用 Tailwind utility-first 方案 |
 | **Zod** | 執行期型別驗證 | 驗證 API 回應結構，確保資料符合預期 Schema |
 | **Sonner** | Toast 通知 | 美觀的通知元件，API 簡潔 |
 | **Lucide React** | 圖示 | Tree-shakable，與 shadcn/ui 搭配良好 |
@@ -176,7 +169,7 @@ App
 
 **解決方法**：
 - 設定 Axios 超時為 15 秒，避免過早放棄請求
-- TanStack Query 內建重試機制（預設 3 次），cold start 失敗後自動重試
+- TanStack Query 設定重試 3 次搭配 exponential backoff（3s → 6s → 12s），cold start 失敗後自動重試
 - 載入期間顯示 Skeleton 骨架屏，提供視覺回饋，降低使用者焦慮感
 
 ### 2. 切換英雄時 HeroList 重新渲染

@@ -1,5 +1,5 @@
 import { QueryClientProvider } from "@tanstack/react-query";
-import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { Navigate, createRouter, RouterProvider } from "@tanstack/react-router";
 import queryClient from "@/lib/query-client";
 import { routeTree } from "@/routeTree.gen";
 
@@ -9,7 +9,10 @@ declare module "@tanstack/react-router" {
   }
 }
 
-const router = createRouter({ routeTree });
+const router = createRouter({
+  routeTree,
+  defaultNotFoundComponent: () => <Navigate to="/heroes" />,
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

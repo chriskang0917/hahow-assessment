@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ABILITY_KEYS } from "@/constants/hero.const";
@@ -13,7 +14,7 @@ type HeroProfileProps = {
 };
 
 export const HeroProfile = ({ heroId }: HeroProfileProps) => {
-  const { data: profile, isLoading, isError } = useHeroProfile(heroId);
+  const { data: profile, isLoading, isError, error } = useHeroProfile(heroId);
   const { abilities, remaining, isDirty, canSave, increment, decrement } =
     useAbilityEditor(profile);
   const { mutate: save, isPending: isSaving } = useSaveProfile(heroId);
@@ -21,9 +22,10 @@ export const HeroProfile = ({ heroId }: HeroProfileProps) => {
   if (isLoading) return <HeroProfileSkeleton />;
 
   if (isError) {
+    const is404 = error instanceof AxiosError && error.response?.status === 404;
     return (
       <div className="mt-8 rounded-xl border border-destructive/50 p-6 text-center text-destructive">
-        找不到此英雄的能力值資料
+        {is404 ? "找不到此英雄" : "載入失敗，請重試"}
       </div>
     );
   }
