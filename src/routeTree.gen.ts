@@ -9,149 +9,48 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthRoot2FaRouteImport } from './routes/auth/root-2-fa'
-import { Route as AuthLoginRouteImport } from './routes/auth/login'
-import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
-import { Route as ProtectedSupplierHomeRouteImport } from './routes/_protected/supplier/home'
-import { Route as ProtectedRootHomeRouteImport } from './routes/_protected/root/home'
-import { Route as ProtectedFactoryHomeRouteImport } from './routes/_protected/factory/home'
+import { Route as HeroesIndexRouteImport } from './routes/heroes/index'
 
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProtectedRoute = ProtectedRouteImport.update({
-  id: '/_protected',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoot2FaRoute = AuthRoot2FaRouteImport.update({
-  id: '/root-2-fa',
-  path: '/root-2-fa',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => AuthRoute,
-} as any)
-const ProtectedSupplierHomeRoute = ProtectedSupplierHomeRouteImport.update({
-  id: '/supplier/home',
-  path: '/supplier/home',
-  getParentRoute: () => ProtectedRoute,
-} as any)
-const ProtectedRootHomeRoute = ProtectedRootHomeRouteImport.update({
-  id: '/root/home',
-  path: '/root/home',
-  getParentRoute: () => ProtectedRoute,
-} as any)
-const ProtectedFactoryHomeRoute = ProtectedFactoryHomeRouteImport.update({
-  id: '/factory/home',
-  path: '/factory/home',
-  getParentRoute: () => ProtectedRoute,
+const HeroesIndexRoute = HeroesIndexRouteImport.update({
+  id: '/heroes/',
+  path: '/heroes/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteWithChildren
-  '/auth/forgot-password': typeof AuthForgotPasswordRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/root-2-fa': typeof AuthRoot2FaRoute
-  '/factory/home': typeof ProtectedFactoryHomeRoute
-  '/root/home': typeof ProtectedRootHomeRoute
-  '/supplier/home': typeof ProtectedSupplierHomeRoute
+  '/heroes': typeof HeroesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteWithChildren
-  '/auth/forgot-password': typeof AuthForgotPasswordRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/root-2-fa': typeof AuthRoot2FaRoute
-  '/factory/home': typeof ProtectedFactoryHomeRoute
-  '/root/home': typeof ProtectedRootHomeRoute
-  '/supplier/home': typeof ProtectedSupplierHomeRoute
+  '/heroes': typeof HeroesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_protected': typeof ProtectedRouteWithChildren
-  '/auth': typeof AuthRouteWithChildren
-  '/auth/forgot-password': typeof AuthForgotPasswordRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/root-2-fa': typeof AuthRoot2FaRoute
-  '/_protected/factory/home': typeof ProtectedFactoryHomeRoute
-  '/_protected/root/home': typeof ProtectedRootHomeRoute
-  '/_protected/supplier/home': typeof ProtectedSupplierHomeRoute
+  '/heroes/': typeof HeroesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/auth'
-    | '/auth/forgot-password'
-    | '/auth/login'
-    | '/auth/root-2-fa'
-    | '/factory/home'
-    | '/root/home'
-    | '/supplier/home'
+  fullPaths: '/' | '/heroes'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/auth'
-    | '/auth/forgot-password'
-    | '/auth/login'
-    | '/auth/root-2-fa'
-    | '/factory/home'
-    | '/root/home'
-    | '/supplier/home'
-  id:
-    | '__root__'
-    | '/'
-    | '/_protected'
-    | '/auth'
-    | '/auth/forgot-password'
-    | '/auth/login'
-    | '/auth/root-2-fa'
-    | '/_protected/factory/home'
-    | '/_protected/root/home'
-    | '/_protected/supplier/home'
+  to: '/' | '/heroes'
+  id: '__root__' | '/' | '/heroes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ProtectedRoute: typeof ProtectedRouteWithChildren
-  AuthRoute: typeof AuthRouteWithChildren
+  HeroesIndexRoute: typeof HeroesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_protected': {
-      id: '/_protected'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof ProtectedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -159,85 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/root-2-fa': {
-      id: '/auth/root-2-fa'
-      path: '/root-2-fa'
-      fullPath: '/auth/root-2-fa'
-      preLoaderRoute: typeof AuthRoot2FaRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/auth/login': {
-      id: '/auth/login'
-      path: '/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/auth/forgot-password': {
-      id: '/auth/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/auth/forgot-password'
-      preLoaderRoute: typeof AuthForgotPasswordRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_protected/supplier/home': {
-      id: '/_protected/supplier/home'
-      path: '/supplier/home'
-      fullPath: '/supplier/home'
-      preLoaderRoute: typeof ProtectedSupplierHomeRouteImport
-      parentRoute: typeof ProtectedRoute
-    }
-    '/_protected/root/home': {
-      id: '/_protected/root/home'
-      path: '/root/home'
-      fullPath: '/root/home'
-      preLoaderRoute: typeof ProtectedRootHomeRouteImport
-      parentRoute: typeof ProtectedRoute
-    }
-    '/_protected/factory/home': {
-      id: '/_protected/factory/home'
-      path: '/factory/home'
-      fullPath: '/factory/home'
-      preLoaderRoute: typeof ProtectedFactoryHomeRouteImport
-      parentRoute: typeof ProtectedRoute
+    '/heroes/': {
+      id: '/heroes/'
+      path: '/heroes'
+      fullPath: '/heroes'
+      preLoaderRoute: typeof HeroesIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface ProtectedRouteChildren {
-  ProtectedFactoryHomeRoute: typeof ProtectedFactoryHomeRoute
-  ProtectedRootHomeRoute: typeof ProtectedRootHomeRoute
-  ProtectedSupplierHomeRoute: typeof ProtectedSupplierHomeRoute
-}
-
-const ProtectedRouteChildren: ProtectedRouteChildren = {
-  ProtectedFactoryHomeRoute: ProtectedFactoryHomeRoute,
-  ProtectedRootHomeRoute: ProtectedRootHomeRoute,
-  ProtectedSupplierHomeRoute: ProtectedSupplierHomeRoute,
-}
-
-const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
-  ProtectedRouteChildren,
-)
-
-interface AuthRouteChildren {
-  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthRoot2FaRoute: typeof AuthRoot2FaRoute
-}
-
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
-  AuthLoginRoute: AuthLoginRoute,
-  AuthRoot2FaRoute: AuthRoot2FaRoute,
-}
-
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ProtectedRoute: ProtectedRouteWithChildren,
-  AuthRoute: AuthRouteWithChildren,
+  HeroesIndexRoute: HeroesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
