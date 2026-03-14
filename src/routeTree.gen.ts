@@ -9,48 +9,72 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as HeroesRouteRouteImport } from './routes/heroes/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HeroesIndexRouteImport } from './routes/heroes/index'
+import { Route as HeroesHeroIdRouteImport } from './routes/heroes/$heroId'
 
+const HeroesRouteRoute = HeroesRouteRouteImport.update({
+  id: '/heroes',
+  path: '/heroes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HeroesIndexRoute = HeroesIndexRouteImport.update({
-  id: '/heroes/',
-  path: '/heroes/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => HeroesRouteRoute,
+} as any)
+const HeroesHeroIdRoute = HeroesHeroIdRouteImport.update({
+  id: '/$heroId',
+  path: '/$heroId',
+  getParentRoute: () => HeroesRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/heroes': typeof HeroesIndexRoute
+  '/heroes': typeof HeroesRouteRouteWithChildren
+  '/heroes/$heroId': typeof HeroesHeroIdRoute
+  '/heroes/': typeof HeroesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/heroes/$heroId': typeof HeroesHeroIdRoute
   '/heroes': typeof HeroesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/heroes': typeof HeroesRouteRouteWithChildren
+  '/heroes/$heroId': typeof HeroesHeroIdRoute
   '/heroes/': typeof HeroesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/heroes'
+  fullPaths: '/' | '/heroes' | '/heroes/$heroId' | '/heroes/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/heroes'
-  id: '__root__' | '/' | '/heroes/'
+  to: '/' | '/heroes/$heroId' | '/heroes'
+  id: '__root__' | '/' | '/heroes' | '/heroes/$heroId' | '/heroes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  HeroesIndexRoute: typeof HeroesIndexRoute
+  HeroesRouteRoute: typeof HeroesRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/heroes': {
+      id: '/heroes'
+      path: '/heroes'
+      fullPath: '/heroes'
+      preLoaderRoute: typeof HeroesRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -60,17 +84,38 @@ declare module '@tanstack/react-router' {
     }
     '/heroes/': {
       id: '/heroes/'
-      path: '/heroes'
-      fullPath: '/heroes'
+      path: '/'
+      fullPath: '/heroes/'
       preLoaderRoute: typeof HeroesIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof HeroesRouteRoute
+    }
+    '/heroes/$heroId': {
+      id: '/heroes/$heroId'
+      path: '/$heroId'
+      fullPath: '/heroes/$heroId'
+      preLoaderRoute: typeof HeroesHeroIdRouteImport
+      parentRoute: typeof HeroesRouteRoute
     }
   }
 }
 
+interface HeroesRouteRouteChildren {
+  HeroesHeroIdRoute: typeof HeroesHeroIdRoute
+  HeroesIndexRoute: typeof HeroesIndexRoute
+}
+
+const HeroesRouteRouteChildren: HeroesRouteRouteChildren = {
+  HeroesHeroIdRoute: HeroesHeroIdRoute,
+  HeroesIndexRoute: HeroesIndexRoute,
+}
+
+const HeroesRouteRouteWithChildren = HeroesRouteRoute._addFileChildren(
+  HeroesRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  HeroesIndexRoute: HeroesIndexRoute,
+  HeroesRouteRoute: HeroesRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

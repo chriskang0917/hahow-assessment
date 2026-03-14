@@ -1,10 +1,13 @@
-import type { ZodType } from "zod";
+import type { ZodSchema } from "zod";
 
 /**
  * Validate an API response against a Zod schema using safeParse.
  * Returns the parsed data on success, or throws on failure.
  */
-export function responseWithSchema<T>(response: unknown, schema: ZodType<T>): T {
+export function responseWithSchema<T extends ZodSchema>(
+  response: unknown,
+  schema: T,
+): T["_output"] {
   const result = schema.safeParse(response);
 
   if (!result.success) {

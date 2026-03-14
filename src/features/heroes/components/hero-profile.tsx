@@ -13,7 +13,7 @@ type HeroProfileProps = {
 
 export const HeroProfile = ({ heroId }: HeroProfileProps) => {
   const { data: profile, isLoading, isError } = useHeroProfile(heroId);
-  const { abilities, remaining, canSave, isDirty, increment, decrement } =
+  const { abilities, remaining, canSave, increment, decrement } =
     useAbilityEditor(profile);
   const { mutate: save, isPending: isSaving } = useSaveProfile(heroId);
 
