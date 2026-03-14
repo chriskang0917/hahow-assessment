@@ -1,10 +1,22 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 import { HeroList } from "@/features/heroes/components/hero-list";
 import { DarkModeToggle } from "@/features/heroes/components/dark-mode-toggle";
 
 export const Route = createFileRoute("/heroes")({
   component: HeroesLayout,
+  errorComponent: HeroesError,
 });
+
+function HeroesError() {
+  const router = useRouter();
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
+      <p className="text-lg text-destructive">頁面發生錯誤</p>
+      <Button onClick={() => router.invalidate()}>重新載入</Button>
+    </main>
+  );
+}
 
 function HeroesLayout() {
   return (
