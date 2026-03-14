@@ -6,6 +6,7 @@ import { useSaveProfile } from "@/features/heroes/hooks/use-save-profile";
 import { useAbilityEditor } from "@/features/heroes/hooks/use-ability-editor";
 import { AbilityRow } from "./ability-row";
 import { HeroProfileSkeleton } from "./hero-profile-skeleton";
+import { UnsavedChangesBlocker } from "./unsaved-changes-blocker";
 
 type HeroProfileProps = {
   heroId: string;
@@ -57,6 +58,7 @@ export const HeroProfile = ({ heroId }: HeroProfileProps) => {
           儲存
         </Button>
       </div>
+      <UnsavedChangesBlocker isDirty={isDirty} />
     </section>
   );
 };
