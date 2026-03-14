@@ -32,12 +32,37 @@ context: |
   - Test files co-located with source (*.test.ts in the same directory)
   - MSW handlers placed in the feature's mocks/ directory
 
+  Available Makefile targets:
+  - make dev — 啟動開發伺服器
+  - make format — 程式碼格式化（Biome）
+  - make lint — 執行 lint 檢查（Biome）
+  - make check — 執行 Biome 全面檢查（format + lint）
+  - make ci — 執行 CI 檢查（Biome）
+  - make ts-check — TypeScript 型別檢查
+  - make build — Docker 建置
+
 rules:
   proposal:
     - 使用繁體中文撰寫
     - 保持精簡，500 字以內
     - 說明與現有架構的整合方式
+  design:
+    - 使用繁體中文撰寫
+    - 聚焦架構決策與技術選型，非逐行實作細節
+    - 保持精簡，避免冗長描述
+  specs:
+    - 使用繁體中文撰寫
+    - 每個 requirement 使用 Given-When-Then 場景格式
+    - 每個 requirement 須可驗證
   tasks:
     - 每個 task 控制在 2 小時以內
     - 遵循現有 feature module 結構
     - API 相關 task 須遵循四層架構 (api/app/transform/dto)
+    - 每個 task 須包含驗證方式，引用對應的 Makefile target（如 make check、make ts-check）
+
+references:
+  api-skill: |
+    API 新增時，請使用 /create-api skill（位於 .claude/skills/create-api/）。
+    該 skill 定義了完整的四層架構生成規則（dto → api → transform → app）、
+    檔案命名、函式命名、型別命名慣例，以及 TanStack Query hooks 的生成模式。
+    詳見 .claude/skills/create-api/SKILL.md 與 .claude/skills/create-api/templates.md。

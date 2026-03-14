@@ -11,9 +11,13 @@ graph TD
     A["1. Brainstorming<br/>探索需求與邊界情境"] --> B["2. OpenSpec 建立規格<br/>proposal → specs → design → tasks"]
     B --> C["3. 建立 Worktree<br/>獨立分支處理功能"]
     C --> D["4. 拆分工作計畫<br/>writing-plans"]
-    D --> E["5. 執行實作<br/>subagent 或直接開發"]
-    E --> F["6. TDD 驅動開發<br/>（視情況）"]
-    F --> G["7. Code Review<br/>AI + 人工審查"]
+    D --> E1["5a. 先讀再寫<br/>閱讀相關程式碼"]
+    E1 --> E2["5b. 執行實作<br/>subagent 或直接開發"]
+    E2 --> E3["5a-1. lazygit 確認 Diff<br/>逐行檢視、stage、commit"]
+    E3 --> F1["6a. 先讀再寫<br/>閱讀測試與被測模組"]
+    F1 --> F2["6b. TDD 驅動開發<br/>Red → Green → Refactor"]
+    F2 --> F3["6a-1. lazygit 確認 Diff<br/>每輪 TDD 循環後檢視"]
+    F3 --> G["7. Code Review<br/>AI + 人工審查"]
     G --> H["8. 封存專案<br/>OpenSpec archive"]
 ```
 
@@ -101,6 +105,37 @@ git worktree add ../hahow-assessment-hero-features feature/hero-features
 
 **使用工具：** Claude Code Agent tool / 直接使用 Edit、Write 等工具
 
+#### 5a. 先讀再寫（Code-Aware 原則）
+
+**在每一個實作步驟動手編輯之前，必須先閱讀所有相關的現有程式碼。** 這是確保每一行新程式碼都在知情狀況下寫出的核心紀律：
+
+1. **讀取目標檔案** — 用 `Read` 工具逐一打開即將修改或新增的檔案，完整閱讀現有實作
+2. **讀取相鄰檔案** — 確認同目錄下的 index、types、constants、utils 等，理解匯出慣例與共用邏輯
+3. **讀取上下游依賴** — 追蹤 import/export 鏈，了解呼叫方與被呼叫方的介面與假設
+4. **記錄理解** — 在心中（或計畫中）簡要記下：這段程式碼做了什麼、為什麼這樣做、我即將做的改動如何與之銜接
+
+**不允許的行為：**
+- 未讀檔案就直接寫入或覆蓋
+- 只看 function signature 就假設實作細節
+- 跳過測試檔案的閱讀（測試揭示了預期行為與邊界條件）
+
+**Subagent 也須遵守：** 當使用 Agent tool 分派任務時，prompt 中須明確要求 subagent 先讀取相關程式碼再動手實作。
+
+#### 5a-1. 人工確認 Diff（lazygit）
+
+AI 完成每一段程式碼修改後，我會透過 **lazygit** 逐行檢視變更：
+
+1. **逐檔檢視 diff** — 在 Files panel 中選取每個變更檔案，確認：
+   - 修改的每一行是否符合預期意圖
+   - 是否有非預期的刪除或覆寫
+   - 新增的程式碼是否與既有風格一致
+3. **Stage 或丟棄** — 確認無誤的檔案 stage 進暫存區；有疑慮的變更直接丟棄或要求 AI 重做
+4. **分批 commit** — 將邏輯相關的變更分組 commit，保持 commit 粒度乾淨
+
+**原則：AI 產出的每一行程式碼，都必須經過開發者在 lazygit diff 中的知情確認，才能進入 commit。**
+
+#### 5b. 選擇執行方式
+
 根據任務特性選擇執行方式：
 
 | 情境 | 執行方式 | 說明 |
@@ -114,6 +149,23 @@ git worktree add ../hahow-assessment-hero-features feature/hero-features
 ### 6. TDD 驅動開發（視情況）
 
 **使用工具：** Superpowers TDD skill
+
+#### 6a. 先讀再寫（同步驟 5a）
+
+在進入 Red-Green-Refactor 循環之前，同樣必須先閱讀：
+
+- **既有測試檔案與規範** — 了解目前的測試風格、命名慣例、mock 方式
+- **被測模組的原始需求** — 確保測試案例覆蓋真實行為而非想像中的實作
+
+#### 6a-1. 人工確認 Diff（lazygit）
+
+每一輪 TDD 循環（Red / Green / Refactor）產出的變更，同樣須在 lazygit 中逐行確認後才 stage：
+
+- **Red 階段** — 確認測試案例是否精準描述預期行為，assertion 是否合理
+- **Green 階段** — 確認實作是否為最小可行方案，沒有偷渡多餘邏輯
+- **Refactor 階段** — 確認重構後行為不變，diff 僅涉及結構調整
+
+#### 6b. Red-Green-Refactor
 
 對於核心業務邏輯，採用 Test-Driven Development：
 
@@ -186,8 +238,12 @@ openspec/changes/archive/2026-03-14-add-config-design-routing-conventions/
 | 建立規格 | — | `/opsx:new`, `/opsx:ff` | proposal, specs, design, tasks |
 | 建立分支 | `worktree` | — | 獨立工作目錄 |
 | 拆分計畫 | `writing-plans` | — | 結構化執行計畫 |
+| 先讀再寫 | `Read` / `Explore agent` | — | 對現有程式碼的完整理解 |
 | 執行實作 | `/executing-plans` | — | 程式碼 |
+| 確認 Diff | `lazygit`（人工） | — | 知情確認後的 staged 變更 |
+| TDD 先讀再寫 | `Read` | — | 對測試風格與被測模組的理解 |
 | TDD 開發 | `tdd` | — | 測試 + 程式碼 |
+| TDD 確認 Diff | `lazygit`（人工） | — | 每輪 TDD 循環的知情確認 |
 | Code Review | `code-review` | `/opsx:verify` | Review 報告 |
 | 封存 | — | `/opsx:archive` | 凍結的 change 記錄 |
 
