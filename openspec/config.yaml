@@ -1,0 +1,32 @@
+schema: spec-driven
+
+context: |
+  Tech stack: TypeScript, React 19, Vite, TailwindCSS 4, Shadcn UI (based on Base UI)
+  State: Zustand (client), TanStack Query 5 (server)
+  Router: TanStack Router (file-based, auto code-splitting)
+  HTTP: Axios with auto camelCase↔snake_case transform, JWT refresh interceptor
+  Validation: Zod
+  Testing: Vitest, MSW
+  Linting: Biome + ESLint + Prettier (with Tailwind plugin)
+  Package manager: pnpm
+  Domain: Hahow Heroes 前端 assessment
+
+  Architecture:
+  - Feature-based modules under src/features/{name}/
+  - Each feature has: components/, hooks/, services/, store/, schema/, utils/, mocks/
+  - API 四層架構: *.api.ts (data access) → *.app.ts (business logic) → *.transform.ts (DTO→domain) → *.dto.ts (types)
+  - Domain types in src/types/, DTO types co-located in services/
+  - Shared UI in src/components/ui/ (Shadcn), src/components/common/, src/components/form/
+  - Reuse existing src/lib/axios.ts for all HTTP calls
+  - Arrow function components, kebab-case file names
+  - Hooks wrap all Query/Mutation usage (no direct useQuery in components)
+
+rules:
+  proposal:
+    - 使用繁體中文撰寫
+    - 保持精簡，500 字以內
+    - 說明與現有架構的整合方式
+  tasks:
+    - 每個 task 控制在 2 小時以內
+    - 遵循現有 feature module 結構
+    - API 相關 task 須遵循四層架構 (api/app/transform/dto)
