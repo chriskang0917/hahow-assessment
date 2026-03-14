@@ -11,8 +11,6 @@ export {
   CardHeader,
   CardTitle,
 } from "./card";
-export { default as AutoPagination } from "./data-table/components/auto-pagination";
-export { default as DataTable } from "./data-table/components/data-table";
 export {
   Dialog,
   DialogClose,
@@ -56,6 +54,7 @@ export {
   PaginationPrevious,
 } from "./pagination";
 export { SearchBar } from "./search-bar";
+export { Skeleton } from "./skeleton";
 export {
   Select,
   SelectContent,
