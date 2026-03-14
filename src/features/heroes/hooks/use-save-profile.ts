@@ -8,8 +8,8 @@ export const useSaveProfile = (heroId: string) => {
 
   return useMutation({
     mutationFn: (profile: HeroProfile) => saveHeroProfile(heroId, profile),
-    onSuccess: (data) => {
-      queryClient.setQueryData(["heroes", heroId, "profile"], data);
+    onSuccess: (_data, variables) => {
+      queryClient.setQueryData(["heroes", heroId, "profile"], variables);
       toast.success("能力值更新成功");
     },
     onError: () => {
