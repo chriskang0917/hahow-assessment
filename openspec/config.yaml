@@ -21,6 +21,17 @@ context: |
   - Arrow function components, kebab-case file names
   - Hooks wrap all Query/Mutation usage (no direct useQuery in components)
 
+  Design system: See docs/DESIGN_GUIDE.md for color, spacing, typography, and component patterns
+
+  Routing conventions (TanStack Router file-based):
+  - Layout routes use route.tsx
+  - Dynamic params use $paramName.tsx
+  - routeTree.gen.ts is auto-generated — do NOT edit manually
+
+  Testing conventions:
+  - Test files co-located with source (*.test.ts in the same directory)
+  - MSW handlers placed in the feature's mocks/ directory
+
 rules:
   proposal:
     - 使用繁體中文撰寫
