@@ -23,10 +23,10 @@ export default defineConfig({
 
   server: {
     proxy: {
-      "/proxy": {
-        target: "http://localhost/",
+      "/api": {
+        target: "https://hahow-recruit.herokuapp.com",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/proxy/, ""),
+        rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
   },
