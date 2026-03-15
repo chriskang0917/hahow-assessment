@@ -1,5 +1,9 @@
 # Hahow Heroes — 前端徵才小專案
 
+## 線上展示
+
+**Live Demo**：[https://hahow.chriskang.at/](https://hahow.chriskang.at/)
+
 ## 專案說明
 
 這是 Hahow 前端工程師徵才專案，根據 Spec 的需求，實作一個「英雄列表與能力值編輯器」的頁面。使用者可以瀏覽英雄列表、點選英雄查看能力值，並在總點數不變的限制下調整各項能力值後儲存，並同步處理了主題切換、Skeleton、未儲存時的變更警告等功能，提升使用者的體驗。
@@ -8,10 +12,38 @@
 
 ### 前置需求
 
-- Node.js 20+
+- Node.js 20+（透過 [fnm](https://github.com/Schniz/fnm) 管理，`make init` 會自動安裝）
 - pnpm 10+
+- [Docker](https://docs.docker.com/get-docker/)（僅建置 Docker image 時需要）
 
-### 安裝與啟動
+### 使用 Makefile 快速啟動
+
+```bash
+# 1. 初始化開發環境（自動安裝 fnm、pnpm、Docker，設定 Node.js 版本、安裝依賴、複製 .env）
+make init
+
+# 2. 啟動開發伺服器
+make dev
+```
+
+### 所有 Make 指令
+
+| 指令 | 說明 |
+|------|------|
+| `make init` | 初始化開發環境（安裝工具、依賴、設定 Node.js 版本、複製 .env、初始化 MSW） |
+| `make dev` | 安裝依賴並啟動開發伺服器 |
+| `make setup-node` | 檢查並切換 Node.js 版本（依據 `.nvmrc`） |
+| `make format` | 使用 Biome 格式化程式碼 |
+| `make lint` | 執行 Biome lint 檢查 |
+| `make check` | 執行 Biome check（格式化 + lint） |
+| `make ci` | 執行 Biome CI 檢查 |
+| `make ts-check` | 執行 TypeScript 型別檢查 |
+| `make build` | 建置 Docker image 並推送至 registry |
+| `make build-local` | 僅建置 Docker image（不推送） |
+| `make build-push` | 僅推送 Docker image 至 registry |
+| `make build branch=main` | 切換到指定分支（`main` 或 `develop`）後建置 |
+
+### 不使用 Makefile
 
 ```bash
 # 安裝依賴
@@ -42,9 +74,16 @@ src/
 ├── index.css                        # 全域樣式（Tailwind CSS）
 ├── routeTree.gen.ts                 # TanStack Router 自動產生的路由樹
 ├── components/
-│   └── ui/                          # shadcn/ui 元件庫（Button, Card, Skeleton...）
+│   └── ui/                          # shadcn/ui 元件庫
+│       ├── index.ts                 # 統一匯出入口
+│       ├── alert-dialog.tsx         # AlertDialog 元件（Base UI）
+│       ├── button.tsx               # Button 元件
+│       └── skeleton.tsx             # Skeleton 骨架屏元件
 ├── constants/
 │   └── hero.const.ts                # 英雄相關常數（ABILITY_KEYS, ABILITY_LABELS）
+├── errors/
+│   ├── schema-validation-error.ts   # API Schema 驗證錯誤類別
+│   └── schema-validation-error.test.ts # Schema 驗證錯誤測試
 ├── features/
 │   └── heroes/
 │       ├── components/
@@ -92,7 +131,8 @@ src/
     ├── case-transform.ts            # snake_case / camelCase 轉換
     ├── case-transform.test.ts       # 轉換函式測試
     ├── logger.ts                    # 日誌工具
-    └── response-with-schema.ts      # Zod Schema 驗證工具
+    ├── response-with-schema.ts      # Zod Schema 驗證工具
+    └── response-with-schema.test.ts # Schema 驗證工具測試
 ```
 
 採用 **Feature-based 模組化設計**：將英雄功能相關的元件、Hooks、服務、型別、Mock 集中在 `features/heroes/` 下，使功能邊界清晰，方便擴展與維護。共用的 UI 元件與工具放在頂層 `components/`、`lib/`、`utils/`。
