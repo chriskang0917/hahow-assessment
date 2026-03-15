@@ -3,13 +3,11 @@ import type { AbilityKey, HeroProfile } from "@/types/hero.type";
 
 export const useAbilityEditor = (initialProfile: HeroProfile | undefined) => {
   const [abilities, setAbilities] = useState<HeroProfile | undefined>(initialProfile);
-  const serializedProfile = JSON.stringify(initialProfile);
 
   const totalPoints = useMemo(() => {
     if (!initialProfile) return 0;
     return Object.values(initialProfile).reduce((sum, v) => sum + v, 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serializedProfile]);
+  }, [initialProfile]);
 
   const currentTotal = useMemo(() => {
     if (!abilities) return 0;
@@ -23,8 +21,7 @@ export const useAbilityEditor = (initialProfile: HeroProfile | undefined) => {
     return (Object.keys(abilities) as AbilityKey[]).some(
       (key) => abilities[key] !== initialProfile[key],
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [abilities, serializedProfile]);
+  }, [abilities, initialProfile]);
 
   const canSave = remaining === 0 && isDirty;
 
@@ -40,8 +37,7 @@ export const useAbilityEditor = (initialProfile: HeroProfile | undefined) => {
 
   useEffect(() => {
     setAbilities(initialProfile);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serializedProfile]);
+  }, [initialProfile]);
 
   return { abilities, remaining, isDirty, canSave, increment, decrement };
 };

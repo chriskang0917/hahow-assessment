@@ -5,6 +5,7 @@ import type { HeroProfile } from "@/types/hero.type";
 import { useAbilityEditor } from "./use-ability-editor";
 
 const mockProfile: HeroProfile = { str: 5, int: 5, agi: 5, luk: 5 };
+const mockProfileWithZeroAbility = { str: 5, int: 5, agi: 0, luk: 5 };
 
 describe("useAbilityEditor", () => {
   it("initializes with profile values and remaining = 0", () => {
@@ -21,7 +22,7 @@ describe("useAbilityEditor", () => {
   });
 
   it("increments a value and decreases remaining", () => {
-    const { result } = renderHook(() => useAbilityEditor({ str: 5, int: 5, agi: 0, luk: 5 }));
+    const { result } = renderHook(() => useAbilityEditor(mockProfileWithZeroAbility));
     act(() => result.current.decrement("str"));
     expect(result.current.remaining).toBe(1);
     act(() => result.current.increment("agi"));
@@ -43,9 +44,9 @@ describe("useAbilityEditor", () => {
   });
 
   it("does not decrement below 0", () => {
-    const { result } = renderHook(() => useAbilityEditor({ str: 0, int: 5, agi: 5, luk: 5 }));
-    act(() => result.current.decrement("str"));
-    expect(result.current.abilities!.str).toBe(0);
+    const { result } = renderHook(() => useAbilityEditor(mockProfileWithZeroAbility));
+    act(() => result.current.decrement("agi"));
+    expect(result.current.abilities!.agi).toBe(0);
   });
 
   it("canSave is true when dirty and remaining = 0", () => {
@@ -71,7 +72,7 @@ describe("useAbilityEditor", () => {
     act(() => result.current.decrement("str"));
     expect(result.current.isDirty).toBe(true);
 
-    const newProfile: HeroProfile = { str: 10, int: 10, agi: 10, luk: 10 };
+    const newProfile: HeroProfile = mockProfileWithZeroAbility;
     rerender({ profile: newProfile });
     expect(result.current.abilities).toEqual(newProfile);
     expect(result.current.isDirty).toBe(false);
