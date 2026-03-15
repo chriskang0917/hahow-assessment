@@ -227,20 +227,26 @@ define switch_branch
 	fi
 endef
 
-build-local: setup-node  ## Build Docker image only
+build-local: setup-node  ## Build Docker image only (load to local daemon)
 	$(call switch_branch)
 	@echo "Building docker image..."
 	docker buildx build \
 	  --platform linux/amd64 \
+	  --load \
 	  -t chriskang028/hahow-assessment:latest \
 	  .
 .PHONY: build-local
 
-build-push:  ## Push Docker image to registry
-	@echo "Pushing docker image..."
-	docker push chriskang028/hahow-assessment:latest
+build-push: setup-node  ## Build and push Docker image to registry
+	$(call switch_branch)
+	@echo "Building and pushing docker image..."
+	docker buildx build \
+	  --platform linux/amd64 \
+	  --push \
+	  -t chriskang028/hahow-assessment:latest \
+	  .
 .PHONY: build-push
 
-build: build-local build-push  ## Build and push Docker image
+build: build-push  ## Build and push Docker image
 .PHONY: build
 
