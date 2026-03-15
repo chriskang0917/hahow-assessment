@@ -1,8 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useRef, useMemo, useState } from "react";
 import type { AbilityKey, HeroProfile } from "@/types/hero.type";
 
 export const useAbilityEditor = (initialProfile: HeroProfile | undefined) => {
   const [abilities, setAbilities] = useState<HeroProfile | undefined>(initialProfile);
+  const prevProfileRef = useRef(initialProfile);
+
+  if (initialProfile !== prevProfileRef.current) {
+    prevProfileRef.current = initialProfile;
+    setAbilities(initialProfile);
+  }
 
   const totalPoints = useMemo(() => {
     if (!initialProfile) return 0;
@@ -34,10 +40,6 @@ export const useAbilityEditor = (initialProfile: HeroProfile | undefined) => {
     if (!abilities || abilities[key] <= 0) return;
     setAbilities((prev) => (prev ? { ...prev, [key]: prev[key] - 1 } : prev));
   };
-
-  useEffect(() => {
-    setAbilities(initialProfile);
-  }, [initialProfile]);
 
   return { abilities, remaining, isDirty, canSave, increment, decrement };
 };
