@@ -4,8 +4,19 @@ import { z } from "zod";
 import { SchemaValidationError } from "@/errors/schema-validation-error";
 import { responseWithSchema } from "./response-with-schema";
 
+const defaultConfig: InternalAxiosRequestConfig = {
+  headers: {} as InternalAxiosRequestConfig["headers"],
+  baseURL: "https://api.example.com",
+  url: "/heroes",
+  method: "get",
+};
+
 const createMockResponse = (
-  overrides: Partial<AxiosResponse> & {
+  overrides: {
+    data?: unknown;
+    status?: number;
+    statusText?: string;
+    headers?: AxiosResponse["headers"];
     config?: Partial<InternalAxiosRequestConfig>;
   } = {},
 ): AxiosResponse => ({
@@ -13,13 +24,7 @@ const createMockResponse = (
   status: overrides.status ?? 200,
   statusText: overrides.statusText ?? "OK",
   headers: overrides.headers ?? {},
-  config: {
-    headers: {},
-    baseURL: "https://api.example.com",
-    url: "/heroes",
-    method: "get",
-    ...overrides.config,
-  } as InternalAxiosRequestConfig,
+  config: { ...defaultConfig, ...overrides.config },
 });
 
 const heroSchema = z.object({

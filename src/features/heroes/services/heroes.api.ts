@@ -4,6 +4,6 @@ import type { HeroDto } from "./heroes.dto";
 import { heroSchema } from "./heroes.schema";
 
 export const fetchHeroesApi = async (signal?: AbortSignal): Promise<HeroDto[]> => {
-  const { data } = await axiosInstance.get("/heroes", { signal });
-  return responseWithSchema(data, heroSchema.array());
+  const response = await axiosInstance.get("/heroes", { signal });
+  return responseWithSchema(response, heroSchema.array());
 };

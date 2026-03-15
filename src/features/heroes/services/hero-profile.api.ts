@@ -7,6 +7,6 @@ export const fetchHeroProfileApi = async (
   heroId: string,
   signal?: AbortSignal,
 ): Promise<HeroProfileDto> => {
-  const { data } = await axiosInstance.get(`/heroes/${heroId}/profile`, { signal });
-  return responseWithSchema(data, heroProfileSchema);
+  const response = await axiosInstance.get(`/heroes/${heroId}/profile`, { signal });
+  return responseWithSchema(response, heroProfileSchema);
 };
