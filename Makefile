@@ -6,13 +6,20 @@ SHELL := bash
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
-PROJECT_NAME=react-template
+PROJECT_NAME=hahow-assessment
 
 # Check and install fnm
 define check_fnm
 	@if ! command -v fnm &> /dev/null; then \
 		echo "📦 正在安裝 fnm (Fast Node Manager)..."; \
-		brew install fnm; \
+		if command -v brew &> /dev/null; then \
+			brew install fnm; \
+		elif command -v curl &> /dev/null; then \
+			curl -fsSL https://fnm.vercel.app/install | bash; \
+		else \
+			echo "❌ 無法自動安裝 fnm，請參考 https://github.com/Schniz/fnm#installation"; \
+			exit 1; \
+		fi; \
 		if [ $$? -eq 0 ]; then \
 			echo "✅ fnm 安裝成功"; \
 		else \
@@ -27,13 +34,18 @@ endef
 # Check and install docker
 define check_docker
 	@if ! command -v docker &> /dev/null; then \
-		echo "📦 正在安裝 Docker..."; \
-		brew install --cask docker; \
-		if [ $$? -eq 0 ]; then \
-			echo "✅ Docker 安裝成功"; \
-			echo "💡 請啟動 Docker Desktop 應用程式"; \
+		if command -v brew &> /dev/null; then \
+			echo "📦 正在安裝 Docker..."; \
+			brew install --cask docker; \
+			if [ $$? -eq 0 ]; then \
+				echo "✅ Docker 安裝成功"; \
+				echo "💡 請啟動 Docker Desktop 應用程式"; \
+			else \
+				echo "❌ Docker 安裝失敗"; \
+				exit 1; \
+			fi; \
 		else \
-			echo "❌ Docker 安裝失敗"; \
+			echo "❌ Docker 未安裝，請參考 https://docs.docker.com/get-docker/ 安裝"; \
 			exit 1; \
 		fi; \
 	else \
@@ -120,19 +132,6 @@ define check_msw_version
 	@echo "✅ MSW 版本初始化完成"
 endef
 
-# Left for backend docker in the future
-# define init_docker_containers
-# 	@echo "🔍 初始化 Docker 容器..."
-#
-# 	@echo "✅ Docker 容器初始化完成"
-# endef
-
-define init_dependencies
-	@echo "🔍 初始化依賴..."
-	pnpm install
-	@echo "✅ 依賴初始化完成"
-endef
-
 # Check and install required tools
 define check_and_install_tools
 	@echo "🔍 檢查必要工具安裝狀態..."
@@ -150,9 +149,7 @@ define check_and_install_tools
 	$(call init_package)
 	$(call check_node_version)
 	$(call check_and_copy_env)
-	$(call init_dependencies)
 	$(call check_msw_version)
-	$(call init_docker_containers)
 
 	@echo "✅ 開發環境初始化完成"
 
@@ -162,9 +159,6 @@ define check_and_install_tools
 	@echo "1. 安裝 biome 的 VSCode Extension"
 	@echo "2. 安裝 Code Spell Checker Extension"
 
-	# @echo ""
-	# @echo "💾 請從 sentry 官網手動複製 .env.sentry 的 DSN 與 TOKEN 至 .env"
-	
 	@echo ""
 	@echo "🔍 最後一步：執行 'make dev' 啟動開發伺服器"
 endef
@@ -186,7 +180,7 @@ init:  ## Initialize development environment (check and install required tools)
 
 dev:  ## Start dev server
 	@echo "Starting dev server..."
-	$(call init_dependencies)
+	$(call init_package)
 	@pnpm run dev
 .PHONY: dev
 
@@ -215,10 +209,10 @@ ts-check:  ## Run ts-check
 	$(call type_check)
 .PHONY: ts-check
 
-## Build local (usage: make build [branch=develop|main])
-branch ?= 
+## Build (usage: make build [branch=develop|main])
+branch ?=
 
-build: setup-node
+define switch_branch
 	@if [ -n "$(branch)" ]; then \
 		if [ "$(branch)" = "develop" ] || [ "$(branch)" = "main" ]; then \
 			echo "Switching to $(branch) branch..."; \
@@ -231,15 +225,22 @@ build: setup-node
 	else \
 		echo "📋 No branch specified, staying on current branch..."; \
 	fi
-	@echo "Building docker image..."
-	# @docker build --platform linux/amd64 -t frontend .
-	@echo "SENTRY_RELEASE: $$(git rev-parse --short HEAD)"
-	@export SENTRY_RELEASE=$$(git rev-parse --short HEAD) && docker compose build
-	@docker compose up -d
-.PHONY: build
+endef
 
-stop:  ## Stop the project
-	@echo "Stopping docker compose..."
-	@docker compose down
-.PHONY: stop
+build-local: setup-node  ## Build Docker image only
+	$(call switch_branch)
+	@echo "Building docker image..."
+	docker buildx build \
+	  --platform linux/amd64 \
+	  -t chriskang028/hahow-assessment:latest \
+	  .
+.PHONY: build-local
+
+build-push:  ## Push Docker image to registry
+	@echo "Pushing docker image..."
+	docker push chriskang028/hahow-assessment:latest
+.PHONY: build-push
+
+build: build-local build-push  ## Build and push Docker image
+.PHONY: build
 
