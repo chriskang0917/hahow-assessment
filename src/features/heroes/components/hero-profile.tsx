@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ABILITY_KEYS } from "@/constants/hero.const";
+import { ABILITY_TYPES } from "@/constants/hero.const";
 import { useAbilityEditor } from "@/features/heroes/hooks/use-ability-editor";
 import { useHeroProfile } from "@/features/heroes/hooks/use-hero-profile";
 import { useSaveProfile } from "@/features/heroes/hooks/use-save-profile";
@@ -39,14 +39,14 @@ export const HeroProfile = ({ heroId }: HeroProfileProps) => {
   return (
     <section className="mt-8 rounded-xl border p-6">
       <div className="space-y-4">
-        {ABILITY_KEYS.map((key) => (
+        {ABILITY_TYPES.map((type) => (
           <AbilityRow
-            key={key}
-            abilityKey={key}
-            value={abilities[key]}
+            key={type}
+            abilityType={type}
+            value={abilities[type]}
             canIncrement={remaining > 0}
-            onIncrement={() => increment(key)}
-            onDecrement={() => decrement(key)}
+            onIncrement={() => increment(type)}
+            onDecrement={() => decrement(type)}
           />
         ))}
       </div>

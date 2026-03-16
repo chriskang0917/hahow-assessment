@@ -1,10 +1,10 @@
 // @vitest-environment happy-dom
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import { setupServer } from "msw/node";
-import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { useSaveProfile } from "./use-save-profile";
 
 vi.mock("sonner", () => ({
@@ -39,9 +39,7 @@ describe("useSaveProfile", () => {
 
   it("shows 404 error message when hero is not found", async () => {
     server.use(
-      http.patch("*/heroes/:heroId/profile", () =>
-        new HttpResponse(null, { status: 404 }),
-      ),
+      http.patch("*/heroes/:heroId/profile", () => new HttpResponse(null, { status: 404 })),
     );
 
     const { result } = renderHook(() => useSaveProfile("999"), { wrapper: createWrapper() });
@@ -53,9 +51,7 @@ describe("useSaveProfile", () => {
 
   it("shows 400 error message when input is invalid", async () => {
     server.use(
-      http.patch("*/heroes/:heroId/profile", () =>
-        new HttpResponse(null, { status: 400 }),
-      ),
+      http.patch("*/heroes/:heroId/profile", () => new HttpResponse(null, { status: 400 })),
     );
 
     const { result } = renderHook(() => useSaveProfile("1"), { wrapper: createWrapper() });
@@ -67,9 +63,7 @@ describe("useSaveProfile", () => {
 
   it("shows generic error message for 500 errors", async () => {
     server.use(
-      http.patch("*/heroes/:heroId/profile", () =>
-        new HttpResponse(null, { status: 500 }),
-      ),
+      http.patch("*/heroes/:heroId/profile", () => new HttpResponse(null, { status: 500 })),
     );
 
     const { result } = renderHook(() => useSaveProfile("1"), { wrapper: createWrapper() });

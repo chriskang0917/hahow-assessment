@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
-import type { HeroProfile } from "@/types/hero.type";
 import { saveHeroProfile } from "@/features/heroes/services/save-profile.app";
+import type { HeroProfile } from "@/types/hero.type";
 
 export const useSaveProfile = (heroId: string) => {
   const queryClient = useQueryClient();

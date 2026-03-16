@@ -1,4 +1,3 @@
-// snake_case to camelCase
 export function snakeToCamel(obj: unknown): unknown {
   if (Array.isArray(obj)) {
     return obj.map(snakeToCamel);
@@ -13,7 +12,6 @@ export function snakeToCamel(obj: unknown): unknown {
   return obj;
 }
 
-// camelCase to snake_case
 export function camelToSnake(obj: unknown): unknown {
   if (Array.isArray(obj)) {
     return obj.map(camelToSnake);

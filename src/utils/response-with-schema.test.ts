@@ -48,9 +48,7 @@ describe("responseWithSchema", () => {
       data: { id: 123, name: "Deku" },
     });
 
-    expect(() => responseWithSchema(response, heroSchema)).toThrow(
-      SchemaValidationError,
-    );
+    expect(() => responseWithSchema(response, heroSchema)).toThrow(SchemaValidationError);
   });
 
   it("should include endpoint, method, status in the error", () => {
@@ -115,9 +113,9 @@ describe("responseWithSchema", () => {
   });
 
   it("should console.error with flattened zod error", () => {
-    const consoleSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {
+      // mock implementation
+    });
     const response = createMockResponse({
       data: { invalid: true },
     });
