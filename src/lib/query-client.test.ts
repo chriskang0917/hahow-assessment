@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { AxiosError, AxiosHeaders } from "axios";
+import { describe, expect, it } from "vitest";
 import queryClient from "./query-client";
 
 function createAxiosError(status: number): AxiosError {

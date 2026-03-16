@@ -1,5 +1,5 @@
-import { useRef, useMemo, useState } from "react";
-import type { AbilityKey, HeroProfile } from "@/types/hero.type";
+import { useMemo, useRef, useState } from "react";
+import type { AbilityType, HeroProfile } from "@/types/hero.type";
 
 export const useAbilityEditor = (initialProfile: HeroProfile | undefined) => {
   const [abilities, setAbilities] = useState<HeroProfile | undefined>(initialProfile);
@@ -12,33 +12,33 @@ export const useAbilityEditor = (initialProfile: HeroProfile | undefined) => {
 
   const totalPoints = useMemo(() => {
     if (!initialProfile) return 0;
-    return Object.values(initialProfile).reduce((sum, v) => sum + v, 0);
+    return Object.values(initialProfile).reduce((sum, current) => sum + current, 0);
   }, [initialProfile]);
 
   const currentTotal = useMemo(() => {
     if (!abilities) return 0;
-    return Object.values(abilities).reduce((sum, v) => sum + v, 0);
+    return Object.values(abilities).reduce((sum, current) => sum + current, 0);
   }, [abilities]);
 
   const remaining = totalPoints - currentTotal;
 
   const isDirty = useMemo(() => {
     if (!abilities || !initialProfile) return false;
-    return (Object.keys(abilities) as AbilityKey[]).some(
+    return (Object.keys(abilities) as AbilityType[]).some(
       (key) => abilities[key] !== initialProfile[key],
     );
   }, [abilities, initialProfile]);
 
   const canSave = remaining === 0 && isDirty;
 
-  const increment = (key: AbilityKey) => {
+  const increment = (type: AbilityType) => {
     if (remaining <= 0 || !abilities) return;
-    setAbilities((prev) => (prev ? { ...prev, [key]: prev[key] + 1 } : prev));
+    setAbilities((prev) => (prev ? { ...prev, [type]: prev[type] + 1 } : prev));
   };
 
-  const decrement = (key: AbilityKey) => {
-    if (!abilities || abilities[key] <= 0) return;
-    setAbilities((prev) => (prev ? { ...prev, [key]: prev[key] - 1 } : prev));
+  const decrement = (type: AbilityType) => {
+    if (!abilities || abilities[type] <= 0) return;
+    setAbilities((prev) => (prev ? { ...prev, [type]: prev[type] - 1 } : prev));
   };
 
   return { abilities, remaining, isDirty, canSave, increment, decrement };

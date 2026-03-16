@@ -11,5 +11,4 @@ export interface HeroProfile {
   luk: number;
 }
 
-/** Keys of HeroProfile — used for iterating ability rows */
-export type AbilityKey = keyof HeroProfile;
+export type AbilityType = keyof HeroProfile;

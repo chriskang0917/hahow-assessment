@@ -14,9 +14,7 @@ export function responseWithSchema<T extends ZodSchema>(
 
   if (!result.success) {
     const error = new SchemaValidationError({
-      endpoint: [response.config.baseURL, response.config.url]
-        .filter(Boolean)
-        .join(""),
+      endpoint: [response.config.baseURL, response.config.url].filter(Boolean).join(""),
       method: response.config.method ?? "unknown",
       status: response.status,
       responseBody: response.data,
