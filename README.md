@@ -67,6 +67,18 @@ pnpm lint
 pnpm type-check
 ```
 
+## 測試
+
+```bash
+# 執行所有測試
+pnpm test
+
+# 監聽模式
+pnpm test --watch
+```
+
+
+
 ## 資料夾架構
 
 ```
@@ -194,6 +206,25 @@ App
 - 透過 features 的集中管理，相關的檔案在功能擴充時，不會有照不到的問題，所有相關的檔案都有高內聚、低耦合的特性，方便後續維護
 - 透過相同的架構規劃，方便開發者快速找到對應的檔案
 
+### 測試策略
+
+- **純邏輯單元測試**：`useAbilityEditor`、`case-transform`、`response-with-schema` 等不涉及 HTTP 的模組，直接以 Vitest 測試
+- **API 整合測試**：使用 **MSW (Mock Service Worker)** 攔截 HTTP 請求，模擬後端回應，驗證 Mutation Hook 在各種狀態碼（200、400、404、500）下的行為
+
+### MSW 使用方式
+
+專案使用 MSW v2 的 **Node 模式**（`msw/node`），僅在測試環境中運行，不影響開發環境（開發環境透過 Vite proxy 連接實際 API）。
+
+#### 為什麼不使用 Single Hero API（`GET /heroes/:heroId`）
+
+評估後選擇不使用單一英雄 API，原因如下：
+
+1. **資料完全重複**：Single Hero API 回傳的資訊與 Hero List API 提供的資料結構與內容完全相同，額外請求只是取得已有的資料
+2. **Hero List 必定存在**：英雄列表始終顯示在畫面上，因此 Hero List API 一定會被呼叫，其回應中已包含所有英雄的基本資訊
+3. **無法預先顯示 Card**：即使在直接載入 `/heroes/:heroId` 的情況下，由於沒有 Hero List 對應的資料，也無法預先顯示可能的英雄卡片位置，仍需等待 List API 回應
+
+**會考慮使用的情況**：除非 Hero List API 延遲非常嚴重（需要先顯示單一英雄資訊作為降級方案），或是 Single Hero API 提供了 List 中沒有的額外資訊，否則耗費額外的網路資源取得相同的資料並不合理。
+
 ## 第三方 Library
 
 | Library | 用途 | 選擇原因 |
@@ -207,7 +238,8 @@ App
 | **Zod** | 執行期型別驗證 | 驗證 API 回應結構，確保資料符合預期 Schema |
 | **Sonner** | Toast 通知 | 美觀的通知元件，API 簡潔 |
 | **Lucide React** | 圖示 | Tree-shakable，與 shadcn/ui 搭配良好 |
-| **Vitest | 測試 | Vitest 與 Vite 生態整合 |
+| **Vitest** | 測試框架 | Vitest 與 Vite 生態整合，共用相同設定 |
+| **MSW (Mock Service Worker)** | API Mocking | 在測試環境中攔截 HTTP 請求，模擬各種 API 回應（成功、錯誤狀態碼），無需啟動真實後端即可進行整合測試 |
 | **Biome + ESLint + Prettier** | 程式碼品質 | Biome 負責格式化與基礎檢查，ESLint 負責 React/Query 規則，Prettier 處理 Tailwind class 排序，並在使用 husky + linted-stage 在 git pre-commit 時進行 prettier format，避免依賴 VSCode Plugin |
 
 ## 註解原則

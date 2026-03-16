@@ -38,27 +38,29 @@ export const HeroProfile = ({ heroId }: HeroProfileProps) => {
 
   return (
     <section className="mt-8 rounded-xl border p-6">
-      <div className="space-y-4">
-        {ABILITY_TYPES.map((type) => (
-          <AbilityRow
-            key={type}
-            abilityType={type}
-            value={abilities[type]}
-            canIncrement={remaining > 0}
-            onIncrement={() => increment(type)}
-            onDecrement={() => decrement(type)}
-          />
-        ))}
-      </div>
+      <div className="flex gap-8 justify-between flex-wrap">
+        <div className="space-y-4">
+          {ABILITY_TYPES.map((type) => (
+            <AbilityRow
+              key={type}
+              abilityType={type}
+              value={abilities[type]}
+              canIncrement={remaining > 0}
+              onIncrement={() => increment(type)}
+              onDecrement={() => decrement(type)}
+            />
+          ))}
+        </div>
 
-      <div className="mt-6 flex items-center justify-between border-t pt-4">
-        <p className="text-sm text-muted-foreground">
-          剩餘點數: <span className="font-mono font-semibold text-foreground">{remaining}</span>
-        </p>
-        <Button onClick={handleSave} disabled={!canSave || isSaving}>
-          {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          儲存
-        </Button>
+        <div className="flex flex-col items-start justify-end space-y-4">
+          <p className="text-sm text-muted-foreground">
+            剩餘點數: <span className="font-mono font-semibold text-foreground">{remaining}</span>
+          </p>
+          <Button className="w-30 h-10" onClick={handleSave} disabled={!canSave || isSaving}>
+            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            儲存
+          </Button>
+        </div>
       </div>
       <UnsavedChangesBlocker isDirty={isDirty} />
     </section>

@@ -34,7 +34,7 @@ export const HeroList = () => {
   }
 
   return (
-    <section className="flex flex-wrap justify-center gap-4">
+    <section className="flex flex-wrap justify-center gap-4 rounded-xl p-4 border-1">
       {heroes.map((hero) => (
         <HeroCard key={hero.id} hero={hero} isSelected={hero.id === heroId} />
       ))}
