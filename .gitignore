@@ -28,8 +28,6 @@ dist-ssr
 .env
 .env.development
 .env.production
-# Sentry Config File
-.env.sentry-build-plugin
 
 # Git worktrees
 .worktrees
