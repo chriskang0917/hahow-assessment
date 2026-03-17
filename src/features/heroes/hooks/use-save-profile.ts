@@ -13,6 +13,9 @@ export const useSaveProfile = (heroId: string) => {
       queryClient.setQueryData(["heroes", heroId, "profile"], variables);
       toast.success("能力值更新成功");
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["heroes", heroId, "profile"] });
+    },
     onError: (error) => {
       if (isAxiosError(error) && error.response) {
         switch (error.response.status) {

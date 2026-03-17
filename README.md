@@ -12,6 +12,8 @@
 
 ### 前置需求
 
+- [Homebrew](https://brew.sh/)（macOS 套件管理器，用於安裝 fnm、Docker 等工具）
+- [Make](https://www.gnu.org/software/make/)（macOS 內建，透過 Xcode Command Line Tools 提供：`xcode-select --install`）
 - Node.js 20+（透過 [fnm](https://github.com/Schniz/fnm) 管理，`make init` 會自動安裝）
 - pnpm 10+
 - [Docker](https://docs.docker.com/get-docker/)（僅建置 Docker image 時需要）
@@ -150,7 +152,7 @@ src/
 
 ### API 服務層架構
 
-每個 API 端點遵循分層設計：`*.api.ts`（axios 呼叫）→ `*.app.ts`（業務邏輯組裝）→ `*.dto.ts`（API 回應型別）。Hooks 統一呼叫 `.app.ts`，不直接存取 `.api.ts`。
+每個 API 端點遵循分層設計：`*.schema.ts`（Zod Schema 驗證）→ `*.dto.ts`（API 回應型別，由 Schema 推導）→ `*.api.ts`（axios 呼叫 + Schema 驗證）→ `*.app.ts`（業務邏輯組裝）。Hooks 統一呼叫 `.app.ts`，不直接存取 `.api.ts`。
 
 目前 app 層為 pass-through（直接回傳 API 結果），因 DTO 與 Domain 型別結構一致，無需額外轉換。隨業務複雜度增加，可在 app 層加入 `*.transform.ts` 進行 API 組裝、資料合併等邏輯。
 
@@ -181,15 +183,16 @@ App
 ### 為什麼選擇 TanStack Router
 
 - **型別安全**：路由參數（如 `heroId`）在編譯時期就有完整型別推導，消除 `useParams` 的 `string | undefined` 問題
+- **路由參數驗證**：透過 `params.parse` 搭配 Zod 在路由層級驗證參數格式（如 `heroId` 必須為正整數），無效參數在進入元件前即被攔截，避免發出無意義的 API 請求
 - **File-based Routing**：檔案即路由，自動產生路由樹，減少手動維護成本
 - **自動 Code Splitting**：每個路由自動拆分為獨立 chunk，提升首次載入速度，React Router 仍需包裹 lazy 進行處理
 
 ### 為什麼選擇 TanStack Query v5
 
 - 將 server state 交由 Query 獨立處理，確保元件僅處理渲染
-- **快取與重複請求消除**：相同的英雄資料只會發送一次請求，切換回已載入的英雄時立即顯示快取資料
-- **Stale-While-Revalidate**：自動 refetch 資料，確保使用者在一定時間下可以自動更新資料
-- **自動重試與錯誤處理**：搭配 Heroku API 的 cold start 問題，內建重試機制大幅提升穩定性
+- **快取與並避免重複請求**：相同的英雄資料只會發送一次請求，切換回已載入的英雄時立即顯示快取資料
+- 自動 refetch 資料，確保使用者在一定時間下可以自動更新資料
+- **自動重試與錯誤處理**：預防 Heroku API 的 cold start 和確保只在特定條件下重試，提升重試條件的精準度而無需複雜的邏輯處理，提升可維護性
 
 ### 為什麼使用純 Custom Hook 管理能力值編輯
 
@@ -203,7 +206,7 @@ App
 
 ### 為什麼使用 features 集中管理
 
-- 透過 features 的集中管理，相關的檔案在功能擴充時，不會有照不到的問題，所有相關的檔案都有高內聚、低耦合的特性，方便後續維護
+- 透過 features 的集中管理，相關的檔案在功能擴充時，不會有找不到的問題，所有相關的檔案都有高內聚、低耦合的特性，方便後續維護
 - 透過相同的架構規劃，方便開發者快速找到對應的檔案
 
 ### 為什麼不使用 Single Hero API（`GET /heroes/:heroId`）
@@ -230,7 +233,7 @@ App
 | **React 19 + TypeScript** | UI 框架 | 業界標準，型別安全 |
 | **Vite 6 + SWC** | 建置工具 | 極速 HMR，SWC 編譯比 Babel 快 20 倍以上 |
 | **TanStack Router** | 型別安全路由 | 主要原生支援型別路由，克服原先 React Router 需要手動撰寫型別的維護成本，file-based routing，自動 code splitting |
-| **TanStack Query v5** | 伺服器狀態管理 | 快取、去重、stale-while-revalidate、自動重試 |
+| **TanStack Query v5** | 伺服器狀態管理 | 快取、去重、自動重試、讓元件可以維持關注點分離，若要自行實現相關的 hook 維護成本非常高 |
 | **Axios** | HTTP 客戶端 | 支援 middleware 的處理（snake_case/camelCase 自動轉換）等設定 |
 | **shadcn/ui + Tailwind CSS v4** | UI 元件 + 樣式 | 可客製化的 headless 元件搭配 utility-first CSS。底層選擇 BASE UI 取代原先的 Radix UI，考量為：MUI 團隊的 full-time 維護支援、Tree-shakable、統一的套件更新管理、更高階的元件設計、完整的 TypeScript 支持。取捨是部分成熟的第三方套件生態支援較少，但目前功能需求皆可達成。樣式方面，評估 CSS-in-JS 在專案成長時容易產生重複性 CSS，且 styled-components 已停止更新新功能，因此採用 Tailwind utility-first 方案 |
 | **Zod** | 執行期型別驗證 | 驗證 API 回應結構，確保資料符合預期 Schema |
@@ -289,7 +292,7 @@ App
 ### 程式碼品質提升
 
 - **React.memo 優化 HeroCard**：避免列表中未選中的英雄卡片因父層狀態變更而不必要地重新渲染
-- **Zod API 回應驗證**：所有 API 回應經過 Zod Schema 驗證，在 runtime 期間確保資料結構正確，同時也有 fallback 的值避免頁面 crash，如果在開發時有錯誤，也有自定義的 Schema Error Type 可以除錯
+- **Zod API 回應驗證**：所有 API 回應經過 Zod Schema 嚴格驗證，在 runtime 期間確保資料結構正確，若 API 回應不符預期則拋出自定義的 `SchemaValidationError`（含 endpoint、method、status、request/response body 等除錯資訊）。目前錯誤訊息透過 `console.error` 輸出，未來規劃整合 Sentry 等錯誤追蹤服務，以在 production 環境提供更完善的錯誤監控與通知
 - **Error Boundary 分層處理**：根路由層級的 Error Boundary 捕獲未預期錯誤，避免頁面錯誤或導致使用者困惑
 - **API 服務分層架構**：`api` → `app` → `hook` 三層分離，各層職責清晰，方便單獨測試與替換
 - **TDD 開發核心邏輯**：`useAbilityEditor` 以測試驅動開發，確保能力值編輯的所有邊界情況正確處理，同時藉由抽象業務邏輯，維持元件本身的乾淨
