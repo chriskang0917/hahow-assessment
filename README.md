@@ -206,16 +206,7 @@ App
 - 透過 features 的集中管理，相關的檔案在功能擴充時，不會有照不到的問題，所有相關的檔案都有高內聚、低耦合的特性，方便後續維護
 - 透過相同的架構規劃，方便開發者快速找到對應的檔案
 
-### 測試策略
-
-- **純邏輯單元測試**：`useAbilityEditor`、`case-transform`、`response-with-schema` 等不涉及 HTTP 的模組，直接以 Vitest 測試
-- **API 整合測試**：使用 **MSW (Mock Service Worker)** 攔截 HTTP 請求，模擬後端回應，驗證 Mutation Hook 在各種狀態碼（200、400、404、500）下的行為
-
-### MSW 使用方式
-
-專案使用 MSW v2 的 **Node 模式**（`msw/node`），僅在測試環境中運行，不影響開發環境（開發環境透過 Vite proxy 連接實際 API）。
-
-#### 為什麼不使用 Single Hero API（`GET /heroes/:heroId`）
+### 為什麼不使用 Single Hero API（`GET /heroes/:heroId`）
 
 評估後選擇不使用單一英雄 API，原因如下：
 
@@ -224,6 +215,13 @@ App
 3. **無法預先顯示 Card**：即使在直接載入 `/heroes/:heroId` 的情況下，由於沒有 Hero List 對應的資料，也無法預先顯示可能的英雄卡片位置，仍需等待 List API 回應
 
 **會考慮使用的情況**：除非 Hero List API 延遲非常嚴重（需要先顯示單一英雄資訊作為降級方案），或是 Single Hero API 提供了 List 中沒有的額外資訊，否則耗費額外的網路資源取得相同的資料並不合理。
+
+### 測試策略
+
+- **純邏輯單元測試**：`useAbilityEditor`、`case-transform`、`response-with-schema` 等不涉及 HTTP 的模組，直接以 Vitest 測試
+- **API 整合測試**：使用 **MSW (Mock Service Worker)** 攔截 HTTP 請求，模擬後端回應，驗證 Mutation Hook 在各種狀態碼（200、400、404、500）下的行為
+
+= **MSW 使用方式**：專案使用 MSW v2 的 **Node 模式**（`msw/node`），僅在測試環境中運行，不影響開發環境（開發環境透過 Vite proxy 連接實際 API）。
 
 ## 第三方 Library
 
@@ -270,12 +268,12 @@ App
 **問題**：就算回覆的是如 400 等錯誤，因為仍會觸發 onError 而導致 retry
 
 **解決方法**：
-因此僅將無法連線 !response 跟 500 以上的錯誤涵括在重試中，如果接收到的為 400 系列就終止重試，
+因此僅將無法連線 ERRCONNECT 跟 500 以上等錯誤涵括在重試中，如果接收到的為 400 系列就終止重試，
 因為 400 系列代表代表伺服器無法處理請求，通常因請求語法錯誤、格式無效或路由問題所致，幾乎不會因為重試就成功，
 除非如 408 (伺服器等待逾時) 或 429 (Too Many Request) 等錯誤碼，其餘都直接顯示相對應或通用錯誤
 
 ### 4. 嘗試將整個專案部署到個人的 Server 上
-第一次從零到一建立 Dockerfile + nginx + Docker，並為避免將專案在 server 上打包消耗 server 資源與處理環境問題，
+第一次從零到一建立 Dockerfile + nginx，並為避免將專案在 server 上打包消耗 server 資源與處理環境問題，
 直接將二階段建置完的 Docker image 上傳到 DockerHub，並在 Server 上 Docker pull + Docker run 跑在 server 上，
 最後再透過反向代理將 3001:80 port 進行映射，成功讓網站在個人的子網域上顯示
 
