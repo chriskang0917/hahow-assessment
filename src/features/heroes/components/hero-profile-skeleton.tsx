@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const HeroProfileSkeleton = () => (
   <div className="mt-8 rounded-xl border p-6">
-    <div className="flex gap-8 justify-between flex-wrap">
+    <div className="flex flex-wrap justify-between gap-8">
       <div className="space-y-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="flex items-center gap-3">

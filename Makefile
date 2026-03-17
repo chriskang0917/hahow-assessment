@@ -181,7 +181,7 @@ dev:  ## Start dev server
 
 format:  ## Format code
 	@echo "Formatting code..."
-	@pnpm exec biome format --write ./src --max-diagnostics=none
+	@pnpm run format
 .PHONY: format
 
 lint:  ## Run lint

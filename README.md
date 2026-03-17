@@ -240,7 +240,7 @@ App
 | **Lucide React** | 圖示 | Tree-shakable，與 shadcn/ui 搭配良好 |
 | **Vitest** | 測試框架 | Vitest 與 Vite 生態整合，共用相同設定 |
 | **MSW (Mock Service Worker)** | API Mocking | 在測試環境中攔截 HTTP 請求，模擬各種 API 回應（成功、錯誤狀態碼），無需啟動真實後端即可進行整合測試 |
-| **Biome + ESLint + Prettier** | 程式碼品質 | Biome 負責格式化與基礎檢查，ESLint 負責 React/Query 規則，Prettier 處理 Tailwind class 排序，並在使用 husky + linted-stage 在 git pre-commit 時進行 prettier format，避免依賴 VSCode Plugin |
+| **Biome + ESLint** | 程式碼品質 | Biome 負責格式化、基礎檢查與 Tailwind class 排序（`useSortedClasses`），ESLint 負責 React/Query 規則 |
 
 ## 註解原則
 

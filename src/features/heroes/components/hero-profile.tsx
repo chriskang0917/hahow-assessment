@@ -38,7 +38,7 @@ export const HeroProfile = ({ heroId }: HeroProfileProps) => {
 
   return (
     <section className="mt-8 rounded-xl border p-6">
-      <div className="flex gap-8 justify-between flex-wrap">
+      <div className="flex flex-wrap justify-between gap-8">
         <div className="space-y-4">
           {ABILITY_TYPES.map((type) => (
             <AbilityRow
@@ -53,10 +53,10 @@ export const HeroProfile = ({ heroId }: HeroProfileProps) => {
         </div>
 
         <div className="flex flex-col items-start justify-end space-y-4">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             剩餘點數: <span className="font-mono font-semibold text-foreground">{remaining}</span>
           </p>
-          <Button className="w-30 h-10" onClick={handleSave} disabled={!canSave || isSaving}>
+          <Button className="h-10 w-30" onClick={handleSave} disabled={!canSave || isSaving}>
             {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             儲存
           </Button>
