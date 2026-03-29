@@ -1,5 +1,4 @@
 import { useBlocker } from "@tanstack/react-router";
-import { useEffect } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,17 +16,10 @@ type UnsavedChangesBlockerProps = {
 
 export const UnsavedChangesBlocker = ({ isDirty }: UnsavedChangesBlockerProps) => {
   const { proceed, reset, status } = useBlocker({
-    condition: isDirty,
+    shouldBlockFn: () => isDirty,
+    enableBeforeUnload: () => isDirty,
+    withResolver: true,
   });
-
-  useEffect(() => {
-    if (!isDirty) return;
-    const handler = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-    };
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
-  }, [isDirty]);
 
   return (
     <AlertDialog open={status === "blocked"}>
